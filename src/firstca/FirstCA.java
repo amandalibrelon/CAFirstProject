@@ -14,22 +14,26 @@ import java.util.regex.Pattern;
  * @author amand
  */
 public class FirstCA {
+    
+    private static final String FILE_PATH = "C:\\Users\\amand\\OneDrive\\Desktop\\POOA\\students.txt";
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        try ( BufferedReader reader = new BufferedReader(new FileReader("C:\\Users\\amand\\OneDrive\\Desktop\\POOA\\students.txt"))) {
+        try ( BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             int lineCount = 0;
             while ((line = reader.readLine()) != null) {
                 lineCount = lineCount + 1;
-                System.out.println(line);
+
                 try {
                     switch (lineCount % 3) {
                         case 1:
                             // We are reading the name`s line
+                            //1 - Validar se nome so tem letras -> [a-zA-Z]
                             validateFirstName(line);
+                            validateSecondName(line);
                             break;
                         case 2:
                             // We are reading the number of classes
@@ -40,6 +44,11 @@ public class FirstCA {
                         default:
                             break;
                     }
+                    System.out.println(line);
+                    //2 - pode numeros e letras e devem estar separados por espaco
+                    //3 - classes tem q ser um int d 1-8
+                    //4 - no min 6 chars, 2 sendo numero, 3-4-5 sendo letra e o 5 nao eh obrigatorio e tudo apos isso sendo num 
+
                 } catch (ValidationException e) {
                     System.out.println(e.getMessage());
                 }
@@ -57,6 +66,18 @@ public class FirstCA {
         Matcher matcher = pattern.matcher(firstName);
         if (!matcher.find()) {
             throw new ValidationException("First name doesn`t contain only characters, name : " + firstName);
+        }
+    }
+
+    private static void validateSecondName(String name) {
+        String[] nameSplit = name.split(" ");
+        if (nameSplit.length > 1) {
+            String secondName = nameSplit[1];
+            Pattern pattern = Pattern.compile("^[a-zA-Z0-9]+$");
+            Matcher matcher = pattern.matcher(secondName);
+            if (!matcher.find()) {
+                throw new ValidationException("Second name invalid, name : " + secondName);
+            }
         }
     }
 }
